@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Pour toi mon amour ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CONFIG GÉNÉRALE --- */
+        body {
+            background: linear-gradient(135deg, #ffe6e6 0%, #ffcdd2 100%);
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; height: 100dvh; /* Fix pour iOS */
+            margin: 0; overflow: hidden;
+            font-family: 'Poppins', sans-serif; touch-action: none;
+        }
+
+        /* --- CŒURS EN FOND --- */
+        .bg-hearts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; pointer-events: none; }
+        .bg-heart { position: absolute; bottom: -50px; color: rgba(255, 255, 255, 0.5); font-size: 20px; animation: floatUp 10s linear infinite; }
+        @keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
+
+        /* --- ENVELOPPE --- */
+        .envelope-wrapper { position: relative; cursor: pointer; transition: transform 0.3s; z-index: 10; }
+        .envelope-wrapper:not(.open):hover { transform: scale(1.05); }
+        .envelope { position: relative; width: 300px; height: 200px; background-color: #ff3333; border-radius: 6px; box-shadow: 0 15px 35px rgba(168, 26, 26, 0.3); }
+        .flap { position: absolute; top: 0; left: 0; width: 0; height: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 150px solid #d32f2f; transform-origin: top; transition: transform 0.6s ease-in-out, z-index 0.6s; z-index: 5; }
+        .heart-seal { position: absolute; top: -85px; left: 50%; transform: translateX(-50%); font-size: 55px; color: #ffeb3b; text-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: beat 1.2s infinite; }
+        @keyframes beat { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.15); } }
+        .pocket { position: absolute; bottom: 0; left: 0; width: 0; height: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-bottom: 150px solid #ff4d4d; z-index: 3; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; pointer-events: none; }
+        
+        /* --- LETTRE --- */
+        .letter { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 260px; height: 0; opacity: 0; background: #fffdf9; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 2; transition: all 0.8s ease-in-out; overflow: hidden; }
+        .letter h2 { margin: 0 0 20px 0; font-family: 'Great Vibes', cursive; font-size: 32px; color: #c62828; text-align: center; line-height: 1.2; }
+        .buttons { display: flex; gap: 15px; margin-top: 5px; width: 100%; justify-content: center; }
+        
+        button { padding: 10px 25px; border: none; border-radius: 50px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; transition: all 0.4s ease; }
+        .btn-yes { background: linear-gradient(45deg, #4caf50, #81c784); color: white; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3); z-index: 20; }
+        .btn-no { background-color: #ef5350; color: white; box-shadow: 0 4px 10px rgba(239, 83, 80, 0.3); white-space: nowrap; position: relative; z-index: 20; }
+        
+        .open .flap { transform: rotateX(180deg); z-index: 1; }
+        .open .letter { height: 260px; bottom: 100px; opacity: 1; z-index: 10; transition-delay: 0.2s; }
+
+        /* --- ÉCRAN FINAL (CORRIGÉ POUR IOS) --- */
+        #final-screen {
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            /* On enlève le justify-center pour permettre le scroll naturel */
+            justify-content: flex-start; 
+            
+            position: fixed; top: 0; left: 0; 
+            width: 100%; 
+            height: 100vh; height: 100dvh; /* Hauteur dynamique */
+            
+            background: rgba(255, 240, 243, 0.98); 
+            z-index: 100;
+            animation: fadeIn 1s;
+            
+            /* Permet le scroll */
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; /* Scroll fluide sur iOS */
+            
+            /* Padding pour éviter que ça touche les bords */
+            padding: 40px 20px 80px 20px; 
+            box-sizing: border-box;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .polaroid {
+            background: white; padding: 10px 10px 30px 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: rotate(-2deg); 
+            margin-bottom: 25px;
+            width: 100%; max-width: 320px; /* Taille contrôlée */
+            border-radius: 2px;
+            flex-shrink: 0; /* Empêche la photo de s'écraser */
+        }
+        .polaroid img { width: 100%; display: block; border-radius: 2px; }
+
+        #final-screen h1 {
+            font-family: 'Great Vibes', cursive; color: #d32f2f;
+            font-size: 2.5em; /* Un peu plus petit pour mobile */
+            margin: 0 0 20px 0; text-align: center;
+            text-shadow: 1px 1px 0px white;
+            flex-shrink: 0;
+        }
+
+        #typewriter-text {
+            font-size: 16px; color: #555; text-align: center;
+            width: 100%; max-width: 400px; 
+            margin: 0 auto 30px auto; /* Marge en bas pour séparer de la carte */
+            min-height: 60px; 
+            font-weight: 300; line-height: 1.5;
+            flex-shrink: 0;
+        }
+
+        .invitation-card {
+            background: white; border: 2px dashed #d32f2f;
+            padding: 20px; border-radius: 10px;
+            text-align: center; 
+            width: 100%; max-width: 350px;
+            transform: scale(0); opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 50px; /* Marge de sécurité pour le bas de l'écran */
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.1);
+        }
+        .invitation-card.show { transform: scale(1); opacity: 1; }
+        .invitation-card h3 { color: #d32f2f; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .invitation-card p { font-size: 16px; font-weight: bold; color: #333; margin: 0; line-height: 1.4; }
+
+        /* --- START OVERLAY --- */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: flex;
+            justify-content: center; align-items: center; z-index: 200;
+            color: white; flex-direction: column; text-align: center;
+        }
+        #start-btn {
+            padding: 15px 40px; font-size: 20px; margin-top: 20px;
+            background: #ff3333; color: white; border: none; border-radius: 50px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="start-overlay">
+        <h2 style="font-family: 'Poppins'; margin-bottom: 10px;">Une surprise pour toi...</h2>
+        <button id="start-btn">Ouvrir ❤️</button>
+    </div>
+
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <div class="envelope-wrapper" id="envelopeWrapper">
+        <div class="envelope">
+            <div class="flap"></div>
+            <div class="heart-seal">❤️</div>
+            <div class="pocket"></div>
+            <div class="letter">
+                <h2>Veux-tu être ma Valentine ?</h2>
+                <div class="buttons">
+                    <button class="btn-yes" onclick="sayYes()">OUI !</button>
+                    <button class="btn-no" id="btnNo">NON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="final-screen">
+        <h1>Je t'aime ! ❤️</h1>
+        
+        <div class="polaroid">
+            <!-- N'oublie pas de renommer ta photo en nous.jpg -->
+            <img src="nous.jpg" alt="Nous" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3hneG1wYnBubG16b3A5M3F6b3A5M3F6b3A5M3F6b3A5M3F6b3A5/MDJ5dyM8rF84jO6/giphy.gif'">
+        </div>
+
+        <div id="typewriter-text"></div>
+
+        <div class="invitation-card" id="invitation">
+            <h3>PROGRAMME DES VACANCES :</h3>
+            <p>Je prends mon billet pour passer tes vacances avec toi et fêter une Saint-Valentin romantique ! ✈️❤️</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- TON TEXTE FINAL ---
+        const myMessage = "Tu me manques trop... Je t'avais promis de venir te voir en Corse. Comme tu auras une semaine de vacances, c'est le moment parfait... Je descends te rejoindre si tu l'acceptes. :)";
+        
+        const envelopeWrapper = document.getElementById('envelopeWrapper');
+        const btnNo = document.getElementById('btnNo');
+        const finalScreen = document.getElementById('final-screen');
+        const startOverlay = document.getElementById('start-overlay');
+        const startBtn = document.getElementById('start-btn');
+        const music = document.getElementById('bg-music');
+        const typeWriterElement = document.getElementById('typewriter-text');
+        const invitationCard = document.getElementById('invitation');
+        let isOpened = false;
+
+        function createHearts() {
+            const container = document.getElementById('bgHearts');
+            for(let i=0; i<20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        startBtn.addEventListener('click', () => {
+            startOverlay.style.display = 'none';
+            music.volume = 0.4;
+            music.play().catch(e => console.log("Audio bloqué : " + e));
+        });
+
+        envelopeWrapper.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return;
+            if (!isOpened) {
+                envelopeWrapper.classList.add('open');
+                isOpened = true;
+            }
+        });
+
+        const noTexts = ["NON", "Tu es sûre ?", "Vraiment ?", "Réfléchis...", "Allez...", "S'il te plait ❤️"];
+        let textIndex = 0;
+
+        function moveBtn() {
+            if (btnNo.parentNode !== document.body) {
+                document.body.appendChild(btnNo);
+                btnNo.style.position = 'fixed'; 
+                btnNo.style.zIndex = '9999';
+            }
+            const maxX = window.innerWidth - btnNo.offsetWidth - 20;
+            const maxY = window.innerHeight - btnNo.offsetHeight - 20;
+            btnNo.style.left = Math.max(10, Math.random() * maxX) + 'px';
+            btnNo.style.top = Math.max(10, Math.random() * maxY) + 'px';
+            textIndex = (textIndex + 1) % noTexts.length;
+            btnNo.innerText = noTexts[textIndex];
+        }
+
+        btnNo.addEventListener('mouseover', moveBtn);
+        btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); moveBtn(); });
+        btnNo.addEventListener('click', (e) => { e.preventDefault(); moveBtn(); });
+
+        function sayYes() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            
+            setTimeout(() => {
+                envelopeWrapper.style.display = 'none';
+                btnNo.style.display = 'none';
+                finalScreen.style.display = 'flex'; // Affiche l'écran final
+                
+                startTypewriter();
+
+                var end = Date.now() + 5000;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff0000', '#ffccd5'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff0000', '#ffccd5'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }, 800);
+        }
+
+        function startTypewriter() {
+            let i = 0;
+            typeWriterElement.innerHTML = "";
+            function type() {
+                if (i < myMessage.length) {
+                    typeWriterElement.innerHTML += myMessage.charAt(i);
+                    i++;
+                    setTimeout(type, 50); 
+                } else {
+                    setTimeout(() => {
+                        invitationCard.classList.add('show');
+                        // Scroll automatique vers le bas pour voir la carte
+                        invitationCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        confetti({ particleCount: 100, spread: 100, origin: { y: 0.7 } });
+                    }, 500);
+                }
+            }
+            type();
+        }
+    </script>
+</body>
+</html>
